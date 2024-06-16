@@ -33,7 +33,7 @@ export const getUserPlanInfo = createAsyncThunk(
       return rejectWithValue("User is not authenticated");
     }
     try {
-      const response = await getUserPlan();
+      const response = await getUserPlan(true);
       const data = userPlanSchema.parse(response.data);
       const res: UserPlan = {
         startDate: new Date(data.startDate),

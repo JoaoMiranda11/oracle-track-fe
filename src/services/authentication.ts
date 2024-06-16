@@ -6,7 +6,7 @@ interface OtpResponse {
 }
 
 export async function signin(email: string, password: string) {
-  return await OracleTrackApi.post<OtpResponse | string>(
+  return await OracleTrackApi.post<OtpResponse>(
     "auth/signin",
     {},
     {
@@ -26,6 +26,8 @@ export async function validateOtp(email: string, otp: string, hash: string) {
   });
 }
 
-export async function isAlive() {
-  return await OracleTrackApi.get("auth/live");
+export async function getUserInfo() {
+  return await OracleTrackApi.get<UserJWT | null>("auth/live")
+    .then(({ data }) => data)
+    .catch(() => null);
 }

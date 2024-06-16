@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 interface LoginFormProps {
-  signin: (email: string, password: string) => Promise<boolean>;
+  signin: (email: string, password: string) => Promise<void>;
 }
 
 const validateLoginForm = z.object({

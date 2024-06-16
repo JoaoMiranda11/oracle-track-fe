@@ -1,4 +1,19 @@
 import type { Config } from "tailwindcss"
+const { fontFamily } = require("tailwindcss/defaultTheme");
+const {
+  default: flattenColorPalette,
+} = require("tailwindcss/lib/util/flattenColorPalette");
+
+function addVariablesForColors({ addBase, theme }: any) {
+  let allColors = flattenColorPalette(theme("colors"));
+  let newVars = Object.fromEntries(
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+  );
+
+  addBase({
+    ":root": newVars,
+  });
+}
 
 const config = {
   darkMode: ["class"],
@@ -18,6 +33,12 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["var(--font-sans)", ...fontFamily.sans],
+      },
+      maxWidth: {
+        limit: "1680px",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -26,10 +47,12 @@ const config = {
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
+          theme: "hsl(var(--primary-theme))",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
+          theme: "hsl(var(--secondary-theme))",
           foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
@@ -53,6 +76,9 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      boxShadow: {
+        input: `0px 2px 3px -1px rgba(0,0,0,0.1), 0px 1px 0px 0px rgba(25,28,33,0.02), 0px 0px 0px 1px rgba(25,28,33,0.08)`,
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -67,14 +93,59 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        meteor: {
+          "0%": { transform: "rotate(215deg) translateX(0)", opacity: "1" },
+          "70%": { opacity: "1" },
+          "100%": {
+            transform: "rotate(215deg) translateX(-500px)",
+            opacity: "0",
+          },
+        },
+        "soft-bounce": {
+          "0%": {
+            transform: "transform:translateY(5%)",
+          },
+          "50%": {
+            transform: "transform:translateY(5%)",
+          },
+          "100%": {
+            transform: "transform:translateY(5%)",
+          }
+        },
+        hithere: {
+          "30%": {
+            transform: "scale(1.2)",
+          },
+          "40%": {
+            transform: "rotate(-20deg) scale(1.2)",
+          },
+          "60%": {
+            transform: "rotate(-20deg) scale(1.2)",
+          },
+
+          "50%": {
+            transform: "rotate(20deg) scale(1.2)",
+          },
+
+          "70%": {
+            transform: "rotate(0deg) scale(1.2)",
+          },
+
+          "100%": {
+            transform: "scale(1)",
+          },
+        },
       },
       animation: {
+        "hi-there": "hithere 1s ease infinite",
+        "soft-bounce": "bounce 2s ease infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "meteor-effect": "meteor 5s linear infinite",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), addVariablesForColors],
 } satisfies Config
 
 export default config

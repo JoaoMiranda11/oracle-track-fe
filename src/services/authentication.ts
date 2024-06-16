@@ -25,3 +25,7 @@ export async function validateOtp(email: string, otp: string, hash: string) {
     otp,
   });
 }
+
+export async function isAlive() {
+  return await OracleTrackApi.get("auth/live");
+}

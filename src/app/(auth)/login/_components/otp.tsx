@@ -39,7 +39,6 @@ export function OtpForm({ validateOtp, email }: OtpFormProps) {
           <Input
             id="otp"
             type="otp"
-            placeholder="m@example.com"
             required
             {...register("otp")}
           />

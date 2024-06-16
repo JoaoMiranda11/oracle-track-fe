@@ -5,6 +5,7 @@ import { LoginForm } from "./_components/login";
 import * as AuthenticationService from "@/services/authentication";
 import { OtpForm } from "./_components/otp";
 import { useRouter } from "next/navigation";
+import { setCookie } from "@/actions/cookies";
 
 function CountDown({
   dueDate,
@@ -39,8 +40,8 @@ function CountDown({
     return <></>;
   }
 
-  const min = Math.abs(time / 60).toFixed(0);
-  const sec = Math.abs(time % 60).toFixed(0);
+  const min = (0 + Math.abs(time / 60).toFixed(0)).slice(-2);
+  const sec = (0 + Math.abs(time % 60).toFixed(0)).slice(-2);
   return (
     <div>
       {min}:{sec}
@@ -49,7 +50,6 @@ function CountDown({
 }
 
 export default function Login() {
-  const [otp, setOtp] = useState("");
   const [hash, setHash] = useState<string>();
   const [dueDate, setDueDate] = useState<Date>();
   const [email, setEmail] = useState<string>();
@@ -80,8 +80,8 @@ export default function Login() {
         return;
       }
       return await AuthenticationService.validateOtp(email, otp, hash)
-        .then(({ data }) => {
-          console.log("jwt", data);
+        .then(async ({ data }) => {
+          await setCookie(process.env.NEXT_PUBLIC_TOKEN_NAME!, data);
           push("/");
         })
         .catch((err) => {

@@ -17,3 +17,10 @@ export async function purchasePlan(planName: string) {
     planName,
   });
 }
+
+export async function exchangePlan(exchangePlanName: string) {
+  return await OracleTrackApi.post<UserPlan>("checkout/exchange/plan", {
+    ...mockPaymentInfo,
+    exchangePlanName,
+  });
+}

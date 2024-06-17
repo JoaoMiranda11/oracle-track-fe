@@ -9,17 +9,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { usePlan } from "@/hooks/plan.hook";
-import { purchasePlan } from "@/services/user-plan";
+import { exchangePlan, purchasePlan } from "@/services/user-plan";
 import { DollarSign } from "lucide-react";
 
 export default function ProductsPage() {
   const { plan, loading, getPlan } = usePlan();
 
-  const purchaseUserPlan = async (planName: string) => {
-    await purchasePlan(planName)
-    await getPlan()
-  }
-  
+  const handleCheckoutPlan = async (planName: string, currentPlan?: string) => {
+    if (currentPlan) {
+      await exchangePlan(`${currentPlan}_TO_${planName}`.toUpperCase());
+      await getPlan();
+      return;
+    }
+    await purchasePlan(planName);
+    await getPlan();
+  };
+
   return (
     <div>
       <div>
@@ -53,7 +58,11 @@ export default function ProductsPage() {
             <div className="text-sm font-bold">R$ 30.000,00</div>
           </CardContent>
           <CardFooter>
-            <Button onClick={() => purchaseUserPlan('BASIC')} className="w-full">Contratar</Button>
+            <Button
+              onClick={() => handleCheckoutPlan("BASIC", plan?.name)}
+              className="w-full">
+              Contratar
+            </Button>
           </CardFooter>
         </Card>
         <Card
@@ -84,7 +93,11 @@ export default function ProductsPage() {
             <div className="text-sm font-bold">R$ 100.000,00</div>
           </CardContent>
           <CardFooter>
-            <Button onClick={() => purchaseUserPlan('PREMIUM')} className="w-full">Contratar</Button>
+            <Button
+              onClick={() => handleCheckoutPlan("PREMIUM", plan?.name)}
+              className="w-full">
+              Contratar
+            </Button>
           </CardFooter>
         </Card>
       </div>

@@ -8,7 +8,7 @@ export function usePlan() {
   const dispatch: AppDispatch = useDispatch();
   const { isAuthenticated } = useAuth()
   const plan = useSelector((state: RootState) => state.user.plan);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   async function getPlan() {
     setLoading(true)
@@ -17,7 +17,7 @@ export function usePlan() {
   }
 
   useEffect(() => {
-    if (isAuthenticated && !plan) {
+    if (isAuthenticated && plan?.lastFetch === null) {
         getPlan()
     }
   }, [isAuthenticated, plan])

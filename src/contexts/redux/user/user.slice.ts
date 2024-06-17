@@ -2,16 +2,28 @@ import { getUserPlan } from "@/services/user-plan";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { z } from "zod";
 
+type UserPlanStatus = UserPlan & {
+  lastFetch: Date | null;
+};
 interface UserState {
   isAuthenticated: boolean;
   user: UserJWT | null;
-  plan: UserPlan | null;
+  plan: UserPlanStatus;
 }
+
+const defaultPlan: UserPlanStatus = {
+  active: true,
+  dueDate: null,
+  startDate: null,
+  name: "FREE",
+  tier: 0,
+  lastFetch: null,
+};
 
 const initialState: UserState = {
   isAuthenticated: false,
   user: null,
-  plan: null,
+  plan: defaultPlan,
 };
 
 export const userPlanSchema = z.object({
@@ -22,6 +34,7 @@ export const userPlanSchema = z.object({
   startDate: z.string().refine((date) => !isNaN(Date.parse(date)), {
     message: "Invalid date format",
   }),
+  tier: z.number(),
 });
 
 export const getUserPlanInfo = createAsyncThunk(
@@ -35,15 +48,17 @@ export const getUserPlanInfo = createAsyncThunk(
       const response = await getUserPlan();
       const data = userPlanSchema.parse(response.data);
       const dueDate = new Date(data.dueDate);
-      const res: UserPlan = {
+      const res: UserPlanStatus = {
         startDate: new Date(data.startDate),
         dueDate,
         name: data.name,
         active: dueDate > new Date(Date.now()),
+        tier: data.tier,
+        lastFetch: new Date(Date.now())
       };
       return res;
     } catch (error) {
-      console.error(error)
+      console.error(error);
       return rejectWithValue("Failed to fetch user plan");
     }
   }
@@ -65,7 +80,7 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(
       getUserPlanInfo.fulfilled,
-      (state, action: PayloadAction<UserPlan>) => {
+      (state, action: PayloadAction<UserPlanStatus>) => {
         state.plan = action.payload;
       }
     );

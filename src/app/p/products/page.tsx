@@ -16,7 +16,7 @@ export default function ProductsPage() {
   const { plan, loading, getPlan } = usePlan();
 
   const handleCheckoutPlan = async (planName: string, currentPlan?: string) => {
-    if (currentPlan) {
+    if (currentPlan && currentPlan !== 'FREE') {
       await exchangePlan(`${currentPlan}_TO_${planName}`.toUpperCase());
       await getPlan();
       return;
@@ -59,9 +59,10 @@ export default function ProductsPage() {
           </CardContent>
           <CardFooter>
             <Button
-              onClick={() => handleCheckoutPlan("BASIC", plan?.name)}
+              disabled={plan.tier >= 1}
+              onClick={() => handleCheckoutPlan("BASIC", plan.name)}
               className="w-full">
-              Contratar
+              {plan.tier >= 1 ? "Contratado" : "Contratar"}
             </Button>
           </CardFooter>
         </Card>
@@ -95,8 +96,9 @@ export default function ProductsPage() {
           <CardFooter>
             <Button
               onClick={() => handleCheckoutPlan("PREMIUM", plan?.name)}
+              disabled={plan.tier >= 2}
               className="w-full">
-              Contratar
+              {plan.tier >= 2 ? "Contratado" : "Contratar"}
             </Button>
           </CardFooter>
         </Card>

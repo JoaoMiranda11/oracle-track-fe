@@ -11,6 +11,7 @@ interface UserJWT {
 interface UserPlan {
   name: string;
   active: boolean;
-  dueDate: Date;
-  startDate: Date;
+  dueDate: Date | null;
+  startDate: Date | null;
+  tier: number;
 }

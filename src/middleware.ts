@@ -19,11 +19,11 @@ class AuthMiddleware {
   }
 
   isProtectedPage() {
-    return this.path?.startsWith("/p/");
+    return this.path?.startsWith("/p/") || this.path === "/p";
   }
 
   isAuthPage() {
-    return this.path?.startsWith("/auth/");
+    return this.path?.startsWith("/auth/login");
   }
 }
 

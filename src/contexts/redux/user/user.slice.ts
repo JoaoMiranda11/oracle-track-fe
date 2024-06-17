@@ -22,7 +22,6 @@ export const userPlanSchema = z.object({
   startDate: z.string().refine((date) => !isNaN(Date.parse(date)), {
     message: "Invalid date format",
   }),
-  active: z.boolean(),
 });
 
 export const getUserPlanInfo = createAsyncThunk(
@@ -33,16 +32,18 @@ export const getUserPlanInfo = createAsyncThunk(
       return rejectWithValue("User is not authenticated");
     }
     try {
-      const response = await getUserPlan(true);
+      const response = await getUserPlan();
       const data = userPlanSchema.parse(response.data);
+      const dueDate = new Date(data.dueDate);
       const res: UserPlan = {
         startDate: new Date(data.startDate),
-        dueDate: new Date(data.dueDate),
+        dueDate,
         name: data.name,
-        active: data.active,
+        active: dueDate > new Date(Date.now()),
       };
       return res;
     } catch (error) {
+      console.error(error)
       return rejectWithValue("Failed to fetch user plan");
     }
   }

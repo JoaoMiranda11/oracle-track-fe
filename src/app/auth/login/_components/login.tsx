@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Label } from "@radix-ui/react-label";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -69,7 +70,7 @@ export function LoginForm({ signin }: LoginFormProps) {
       </div>
       <div className="mt-4 text-center text-sm">
         Don&apos;t have an account?{" "}
-        <Link href="#" className="underline">
+        <Link href="/auth/signup" className="underline">
           Sign up
         </Link>
       </div>

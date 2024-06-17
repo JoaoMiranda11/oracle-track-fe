@@ -11,3 +11,7 @@ export async function setCookie(name: string, data: string) {
     path: "/",
   });
 }
+
+export async function clearCookie(name: string) {cookies()
+  cookies().delete(name ?? "cookie")
+}

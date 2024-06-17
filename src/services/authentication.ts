@@ -31,3 +31,13 @@ export async function getUserInfo() {
     .then(({ data }) => data)
     .catch(() => null);
 }
+
+export async function signinUp(name: string, email: string, password: string) {
+  return await OracleTrackApi.post<boolean>("user/create", {
+    name,
+    email,
+    password,
+  })
+    .then(() => true)
+    .catch(() => false);
+}

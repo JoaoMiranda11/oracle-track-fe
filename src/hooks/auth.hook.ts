@@ -2,7 +2,7 @@
 
 import { useDispatch, useSelector } from "react-redux";
 import * as AuthenticationService from "@/services/authentication";
-import { setCookie } from "@/actions/cookies";
+import { clearCookie, setCookie } from "@/actions/cookies";
 import { dashBoardRoute } from "@/app.routes";
 import { login, logout } from "@/contexts/redux/user/user.slice";
 import { decodeJwt } from "@/utils/jwt.utils";
@@ -51,7 +51,7 @@ export function useAuth() {
   }
 
   async function signout() {
-    await setAuthCookie("");
+    await clearCookie(process.env.NEXT_PUBLIC_TOKEN_NAME!);
     dispatch(logout());
   }
 

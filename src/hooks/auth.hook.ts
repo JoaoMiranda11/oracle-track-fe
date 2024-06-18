@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 
 export function useAuth() {
   const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((state: RootState) => state.user);
+  const { isAuthenticated, user } = useSelector((state: RootState) => state.user);
   const { push } = useRouter();
 
   async function setAuthCookie(cookie: string) {
@@ -70,5 +70,5 @@ export function useAuth() {
     }
   }, [isAuthenticated])
 
-  return { signin, signout, validateOtp, getUserInfo, isAuthenticated };
+  return { signin, signout, validateOtp, getUserInfo, user, isAuthenticated };
 }

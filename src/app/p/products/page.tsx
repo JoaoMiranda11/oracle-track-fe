@@ -8,21 +8,30 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useNotification } from "@/contexts/clientSide/notification/notification.context";
 import { usePlan } from "@/hooks/plan.hook";
 import { exchangePlan, purchasePlan } from "@/services/user-plan";
 import { DollarSign } from "lucide-react";
+import { useLayoutEffect } from "react";
 
 export default function ProductsPage() {
   const { plan, loading, getPlan } = usePlan();
+  const { connected, on } = useNotification();
+
+  useLayoutEffect(() => {
+    if (connected) {
+      on("payment_plan", (data) => {
+        getPlan();
+      });
+    }
+  }, [connected]);
 
   const handleCheckoutPlan = async (planName: string, currentPlan?: string) => {
-    if (currentPlan && currentPlan !== 'FREE') {
+    if (currentPlan && currentPlan !== "FREE") {
       await exchangePlan(`${currentPlan}_TO_${planName}`.toUpperCase());
-      await getPlan();
       return;
     }
     await purchasePlan(planName);
-    await getPlan();
   };
 
   return (

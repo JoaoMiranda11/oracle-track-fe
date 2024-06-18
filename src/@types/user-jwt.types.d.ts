@@ -3,7 +3,6 @@ interface UserJWT {
   email: string;
   role: string;
   status: string;
-  credits: number;
   iat: number;
   exp: number;
 }

@@ -8,23 +8,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useNotification } from "@/contexts/clientSide/notification/notification.context";
 import { usePlan } from "@/hooks/plan.hook";
 import { exchangePlan, purchasePlan } from "@/services/user-plan";
 import { DollarSign } from "lucide-react";
-import { useLayoutEffect } from "react";
 
 export default function ProductsPage() {
-  const { plan, loading, getPlan } = usePlan();
-  const { connected, on } = useNotification();
-
-  useLayoutEffect(() => {
-    if (connected) {
-      on("payment_plan", (data) => {
-        getPlan();
-      });
-    }
-  }, [connected]);
+  const { plan, loading } = usePlan();
 
   const handleCheckoutPlan = async (planName: string, currentPlan?: string) => {
     if (currentPlan && currentPlan !== "FREE") {
@@ -68,7 +57,7 @@ export default function ProductsPage() {
           </CardContent>
           <CardFooter>
             <Button
-              disabled={plan.tier >= 1}
+              disabled={plan.tier >= 1 || loading}
               onClick={() => handleCheckoutPlan("BASIC", plan.name)}
               className="w-full">
               {plan.tier >= 1 ? "Contratado" : "Contratar"}
@@ -105,7 +94,7 @@ export default function ProductsPage() {
           <CardFooter>
             <Button
               onClick={() => handleCheckoutPlan("PREMIUM", plan?.name)}
-              disabled={plan.tier >= 2}
+              disabled={plan.tier >= 2 || loading}
               className="w-full">
               {plan.tier >= 2 ? "Contratado" : "Contratar"}
             </Button>

@@ -3,7 +3,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import * as AuthenticationService from "@/services/authentication";
 import { clearCookie, setCookie } from "@/actions/cookies";
-import { dashBoardRoute } from "@/app.routes";
+import { dashBoardRoute, loginRoute } from "@/app.routes";
 import { login, logout } from "@/contexts/redux/user/user.slice";
 import { decodeJwt } from "@/utils/jwt.utils";
 import { RootState } from "@/contexts/redux/store";
@@ -13,17 +13,16 @@ import { useRouter } from "next/navigation";
 export function useAuth() {
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state: RootState) => state.user);
-  const { push } = useRouter();
 
   async function setAuthCookie(cookie: string) {
     await setCookie(process.env.NEXT_PUBLIC_TOKEN_NAME!, cookie);
-    push(dashBoardRoute.href);
   }
 
   async function setAuthInfo(jwt: string) {
     const authInfo = decodeJwt(jwt);
     if (authInfo) {
       dispatch(login(authInfo));
+      return;
     }
     alert("error");
   }

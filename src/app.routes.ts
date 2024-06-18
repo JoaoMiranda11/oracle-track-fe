@@ -43,3 +43,4 @@ export const routes: Route[] = [
 ] as const;
 
 export const dashBoardRoute = routes[0];
+export const loginRoute = routes[2];

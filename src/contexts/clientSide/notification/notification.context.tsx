@@ -1,4 +1,5 @@
 import { useAuth } from "@/hooks/auth.hook";
+import { usePlan } from "@/hooks/plan.hook";
 import {
   ReactNode,
   createContext,
@@ -9,6 +10,7 @@ import {
   useState,
 } from "react";
 import io, { Socket } from "socket.io-client";
+import { WsEventsServer } from "./ws.enum";
 
 interface NotificationContextValues {
   emit: (ev: string, message: any) => void;
@@ -26,6 +28,7 @@ type SocketMessages = Socket<ListenningEvents, EmitEvents>;
 
 export const NotificationProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
+  const { getPlan } = usePlan();
   const socketRef = useRef<Socket<any, any>>();
   const [connected, setConnected] = useState(false);
 
@@ -52,8 +55,9 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
         setConnected(false);
       });
 
-      socket.on("message", (data: any) => {
-        console.log("Message from server:", data);
+      socket.on(WsEventsServer.PAYMENT_PLAN, () => {
+        getPlan();
+        return;
       });
     },
     [user?._id]

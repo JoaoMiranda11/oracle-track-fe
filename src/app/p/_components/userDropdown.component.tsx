@@ -11,9 +11,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useAuth } from "@/hooks/auth.hook";
 
 export function UserDropDown() {
   const { setTheme } = useTheme();
+  const { signout } = useAuth();
 
   return (
     <DropdownMenu>
@@ -54,7 +56,7 @@ export function UserDropDown() {
         <DropdownMenuItem>Settings</DropdownMenuItem>
         <DropdownMenuItem>Support</DropdownMenuItem>
 
-        <DropdownMenuItem>Logout</DropdownMenuItem>
+        <DropdownMenuItem onClick={signout}>Logout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -2,10 +2,10 @@ import { getUserPlan } from "@/services/user-plan";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { z } from "zod";
 
-type UserPlanStatus = UserPlan & {
+export type UserPlanStatus = UserPlan & {
   lastFetch: Date | null;
 };
-interface UserState {
+export interface UserState {
   isAuthenticated: boolean;
   user: UserJWT | null;
   plan: UserPlanStatus;
@@ -54,7 +54,7 @@ export const getUserPlanInfo = createAsyncThunk(
         name: data.name,
         active: dueDate > new Date(Date.now()),
         tier: data.tier,
-        lastFetch: new Date(Date.now())
+        lastFetch: new Date(Date.now()),
       };
       return res;
     } catch (error) {

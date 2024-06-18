@@ -7,8 +7,18 @@ const mockPaymentInfo = {
   installments: 1,
 };
 
+export interface Plan {
+  _id: string;
+  credits: number;
+  description: string;
+  name: string;
+  price: number;
+  duration: number;
+  tier: number;
+}
+
 export async function getUserPlan() {
-  return await OracleTrackApi.get<UserPlan>("userPlans");
+  return await OracleTrackApi.get<UserPlan>("userPlans/current");
 }
 
 export async function purchasePlan(planName: string) {
@@ -18,9 +28,7 @@ export async function purchasePlan(planName: string) {
   });
 }
 
-export async function exchangePlan(exchangePlanName: string) {
-  return await OracleTrackApi.post<UserPlan>("checkout/exchange/plan", {
-    ...mockPaymentInfo,
-    exchangePlanName,
-  });
+export async function getAllPlans() {
+  return await OracleTrackApi.get<Plan[]>("userplans")
+    .then(({ data }) => data)
 }

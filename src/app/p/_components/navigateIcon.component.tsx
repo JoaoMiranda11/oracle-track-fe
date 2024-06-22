@@ -3,17 +3,19 @@ import {
     LineChart,
     Package,
     PanelLeft,
+    Send,
     Search,
     Settings,
     MessageCircle,
     Users2,
-    Package2,
   } from "lucide-react";
 
 export const NavigateIcon = ({ routeName }: { routeName: string }) => {
   const classN = "h-5 w-5";
 
   switch (routeName) {
+    case "send":
+      return <Send className={classN} />;
     case "chat":
       return <MessageCircle className={classN} />;
     case "products":
@@ -25,6 +27,6 @@ export const NavigateIcon = ({ routeName }: { routeName: string }) => {
     case "settings":
       return <Settings className={classN} />;
     default:
-      return <Package2 className={classN} />;
+      return <Home className={classN} />;
   }
 };

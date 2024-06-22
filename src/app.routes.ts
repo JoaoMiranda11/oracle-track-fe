@@ -8,22 +8,26 @@ interface Route {
 }
 
 export const dashboardRoutes: Route[] = [
+  // {
+  //   title: "chat",
+  //   href: "/p/chat",
+  // },
   {
-    title: "chat",
-    href: "/p/chat",
+    title: "send",
+    href: "/p/send",
   },
   {
     title: "products",
     href: "/p/products",
   },
-  {
-    title: "customers",
-    href: "/p/customers",
-  },
-  {
-    title: "analytics",
-    href: "/p/analytics",
-  },
+  // {
+  //   title: "customers",
+  //   href: "/p/customers",
+  // },
+  // {
+  //   title: "analytics",
+  //   href: "/p/analytics",
+  // },
 ] as const;
 
 export const routes: Route[] = [

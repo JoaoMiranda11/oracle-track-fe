@@ -18,9 +18,8 @@ export async function signin(email: string, password: string) {
   );
 }
 
-export async function validateOtp(email: string, otp: string, hash: string) {
+export async function validateOtp(email: string, otp: string) {
   return await OracleTrackApi.post<string>("auth/otp", {
-    hash,
     email,
     otp,
   });

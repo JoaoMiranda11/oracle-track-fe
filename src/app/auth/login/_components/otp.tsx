@@ -1,11 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Label } from "@radix-ui/react-label";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { z } from "zod";
 
 interface OtpFormProps {
@@ -19,13 +23,23 @@ const validateOtpForm = z.object({
 type OtpIputs = z.infer<typeof validateOtpForm>;
 
 export function OtpForm({ validateOtp, email }: OtpFormProps) {
-  const { register, handleSubmit } = useForm<OtpIputs>({
-    resolver: zodResolver(validateOtpForm),
-  });
+  const [value, setValue] = useState("");
+
+  function handleSubmit(otp: string) {
+    const validatorOtp = validateOtpForm.safeParse({ otp });
+    if (validatorOtp.error) {
+      alert("Invalid OTP")
+      return;
+    }
+    validateOtp(otp);
+  }
 
   return (
     <form
-      onSubmit={handleSubmit((d) => validateOtp(d.otp))}
+      onSubmit={(ev) => {
+        ev.preventDefault()
+        handleSubmit(value)
+      }}
       className="mx-auto grid w-[350px] gap-6">
       <div className="grid gap-2 text-center">
         <h1 className="text-3xl font-bold">OTP</h1>
@@ -34,14 +48,23 @@ export function OtpForm({ validateOtp, email }: OtpFormProps) {
         </p>
       </div>
       <div className="grid gap-4">
-        <div className="grid gap-2">
-          <Label htmlFor="email">OTP</Label>
-          <Input
-            id="otp"
-            type="otp"
-            required
-            {...register("otp")}
-          />
+        <div className="flex justify-center items-center">
+          <InputOTP
+            maxLength={6}
+            value={value}
+            onChange={(value) => setValue(value)}>
+            <InputOTPGroup>
+              <InputOTPSlot index={0} />
+              <InputOTPSlot index={1} />
+              <InputOTPSlot index={2} />
+            </InputOTPGroup>
+            <InputOTPSeparator />
+            <InputOTPGroup>
+              <InputOTPSlot index={3} />
+              <InputOTPSlot index={4} />
+              <InputOTPSlot index={5} />
+            </InputOTPGroup>
+          </InputOTP>
         </div>
         <Button type="submit" className="w-full">
           Acessar

@@ -37,16 +37,12 @@ export function useAuth() {
       });
   }
 
-  async function validateOtp(email: string, otp: string, hash: string) {
-    await AuthenticationService.validateOtp(email, otp, hash)
+  async function validateOtp(email: string, otp: string) {
+    await AuthenticationService.validateOtp(email, otp)
       .then(async ({ data }) => {
         await setAuthCookie(data);
         setAuthInfo(data);
       })
-      .catch((err) => {
-        console.error(err);
-        alert("Login Err");
-      });
   }
 
   async function signout() {

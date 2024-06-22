@@ -14,9 +14,9 @@ export default function SendPage() {
     <div>
       <Card x-chunk="dashboard-07-chunk-0">
         <CardHeader>
-          <CardTitle>Product Details</CardTitle>
+          <CardTitle>Enviar SMS</CardTitle>
           <CardDescription>
-            Lipsum dolor sit amet, consectetur adipiscing elit
+            Envie rápido, prático e no melhor preço.
           </CardDescription>
         </CardHeader>
         <CardContent>

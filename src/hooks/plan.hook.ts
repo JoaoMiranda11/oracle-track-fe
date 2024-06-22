@@ -6,21 +6,23 @@ import { useAuth } from "./auth.hook";
 
 export function usePlan() {
   const dispatch: AppDispatch = useDispatch();
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated } = useAuth();
   const plan = useSelector((state: RootState) => state.user.plan);
   const [loading, setLoading] = useState<boolean>(true);
 
   async function getPlan() {
-    setLoading(true)
-    await dispatch(getUserPlanInfo())
-    setLoading(false)
+    setLoading(true);
+    await dispatch(getUserPlanInfo());
+    setLoading(false);
   }
 
   useEffect(() => {
     if (isAuthenticated && plan?.lastFetch === null) {
-        getPlan()
+      getPlan();
+    } else {
+      setLoading(false);
     }
-  }, [isAuthenticated, plan])
+  }, [isAuthenticated, plan]);
 
-  return { getPlan, plan, loading }
+  return { getPlan, plan, loading };
 }

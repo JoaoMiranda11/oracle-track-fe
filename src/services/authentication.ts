@@ -1,12 +1,7 @@
 import { OracleTrackApi } from "./instances/oracle-track.api";
 
-interface OtpResponse {
-  dueDate: Date;
-  hash: string;
-}
-
 export async function signin(email: string, password: string) {
-  return await OracleTrackApi.post<OtpResponse>(
+  return await OracleTrackApi.post<string>(
     "auth/signin",
     {},
     {
@@ -19,7 +14,7 @@ export async function signin(email: string, password: string) {
 }
 
 export async function validateOtp(email: string, otp: string) {
-  return await OracleTrackApi.post<string>("auth/otp", {
+  return await OracleTrackApi.post<UserJWT>("auth/otp", {
     email,
     otp,
   });

@@ -3,12 +3,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import * as AuthenticationService from "@/services/authentication";
 import { clearCookie, setCookie } from "@/actions/cookies";
-import { dashBoardRoute, loginRoute } from "@/app.routes";
 import { login, logout } from "@/contexts/redux/user/user.slice";
 import { decodeJwt } from "@/utils/jwt.utils";
 import { RootState } from "@/contexts/redux/store";
 import { useLayoutEffect } from "react";
-import { useRouter } from "next/navigation";
 
 export function useAuth() {
   const dispatch = useDispatch();
@@ -16,15 +14,6 @@ export function useAuth() {
 
   async function setAuthCookie(cookie: string) {
     await setCookie(process.env.NEXT_PUBLIC_TOKEN_NAME!, cookie);
-  }
-
-  async function setAuthInfo(jwt: string) {
-    const authInfo = decodeJwt(jwt);
-    if (authInfo) {
-      dispatch(login(authInfo));
-      return;
-    }
-    alert("error");
   }
 
   async function signin(email: string, password: string) {
@@ -40,8 +29,7 @@ export function useAuth() {
   async function validateOtp(email: string, otp: string) {
     await AuthenticationService.validateOtp(email, otp)
       .then(async ({ data }) => {
-        await setAuthCookie(data);
-        setAuthInfo(data);
+        dispatch(login(data));
       })
   }
 

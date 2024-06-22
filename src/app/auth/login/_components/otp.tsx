@@ -1,5 +1,6 @@
 "use client";
 
+import { SpinLoader } from "@/components/feedbacks/loader";
 import { Button } from "@/components/ui/button";
 import {
   InputOTP,
@@ -24,21 +25,25 @@ type OtpIputs = z.infer<typeof validateOtpForm>;
 
 export function OtpForm({ validateOtp, email }: OtpFormProps) {
   const [value, setValue] = useState("");
+  const [loading, setLoading] = useState(false);
 
   function handleSubmit(otp: string) {
     const validatorOtp = validateOtpForm.safeParse({ otp });
     if (validatorOtp.error) {
-      alert("Invalid OTP")
+      alert("Invalid OTP");
       return;
     }
-    validateOtp(otp);
+    setLoading(true);
+    validateOtp(otp).finally(() => {
+      setLoading(false);
+    });
   }
 
   return (
     <form
       onSubmit={(ev) => {
-        ev.preventDefault()
-        handleSubmit(value)
+        ev.preventDefault();
+        handleSubmit(value);
       }}
       className="mx-auto grid w-[350px] gap-6">
       <div className="grid gap-2 text-center">
@@ -66,8 +71,8 @@ export function OtpForm({ validateOtp, email }: OtpFormProps) {
             </InputOTPGroup>
           </InputOTP>
         </div>
-        <Button type="submit" className="w-full">
-          Acessar
+        <Button disabled={loading} type="submit" className="w-full">
+          {loading ? <SpinLoader /> : "Acessar"}
         </Button>
       </div>
       <div className="mt-4 text-center text-sm">

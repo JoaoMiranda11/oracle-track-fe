@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { LoginForm } from "./_components/login";
 import { OtpForm } from "./_components/otp";
-import { CountDown } from "@/components/utils/countdown";
+import { CountDown } from "@/components/feedbacks/countdown";
 import { useAuth } from "@/hooks/auth.hook";
 import { useRouter } from "next/navigation";
 import { dashBoardRoute } from "@/app.routes";
@@ -18,7 +18,7 @@ export default function Login() {
     await authSignin(email, password).then((data) => {
       if (!data) return;
       setEmail(email);
-      setDueDate(new Date(data.dueDate));
+      setDueDate(new Date(data));
     });
   };
 

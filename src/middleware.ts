@@ -28,7 +28,7 @@ class AuthMiddleware {
 }
 
 const cookieName = process.env.NEXT_PUBLIC_TOKEN_NAME as string;
-const homePage = "/p/home";
+const homePage = "/p";
 const loginPage = "/auth/login";
 export function middleware(request: NextRequest) {
   const authMiddleware = new AuthMiddleware(request);

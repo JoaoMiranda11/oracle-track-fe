@@ -9,7 +9,7 @@ import { ThemeProvider } from "@/contexts/theme/theme.provider";
 
 import "./globals.css";
 import { ReduxProvider } from "@/contexts/redux/redux.provider";
-import { ClientSideProvider } from "@/contexts/clientSide/clientSide.provider";
+import { ClientSideProvider } from "@/contexts/client/client.provider";
 
 const fontSans = Poppins({
   subsets: ["latin"],

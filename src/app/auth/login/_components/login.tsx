@@ -1,11 +1,12 @@
-"use client"
+"use client";
 
+import { SpinLoader } from "@/components/feedbacks/loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Label } from "@radix-ui/react-label";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -20,13 +21,21 @@ const validateLoginForm = z.object({
 type LoginIputs = z.infer<typeof validateLoginForm>;
 
 export function LoginForm({ signin }: LoginFormProps) {
+  const [loading, setLoading] = useState(false);
   const { register, handleSubmit } = useForm<LoginIputs>({
     resolver: zodResolver(validateLoginForm),
   });
 
+  const handleLogin = (d: LoginIputs) => {
+    setLoading(true);
+    signin(d.email, d.password).finally(() => {
+      setLoading(false);
+    });
+  };
+
   return (
     <form
-      onSubmit={handleSubmit((d) => signin(d.email, d.password))}
+      onSubmit={handleSubmit(handleLogin)}
       className="mx-auto grid w-[350px] gap-6">
       <div className="grid gap-2 text-center">
         <h1 className="text-3xl font-bold">Login</h1>
@@ -61,12 +70,9 @@ export function LoginForm({ signin }: LoginFormProps) {
             {...register("password")}
           />
         </div>
-        <Button type="submit" className="w-full">
-          Login
+        <Button disabled={loading} type="submit" className="w-full">
+          {loading ? <SpinLoader /> : "Login"}
         </Button>
-        {/* <Button variant="outline" className="w-full">
-              Login with Google
-            </Button> */}
       </div>
       <div className="mt-4 text-center text-sm">
         Don&apos;t have an account?{" "}

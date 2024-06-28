@@ -15,29 +15,30 @@ export default function Login() {
   const { signin: authSignin, validateOtp: authValidateOtp } = useAuth();
 
   const signin = async (email: string, password: string) => {
-    await authSignin(email, password).then((data) => {
-      if (!data) return;
-      setEmail(email);
-      setDueDate(new Date(data));
-    });
+    await authSignin(email, password)
+      .then((data) => {
+        setEmail(email);
+        setDueDate(new Date(data));
+      })
+      .catch(() => {
+        alert("Erro ao efetuar login!");
+      });
   };
 
-  const validateOtp = useCallback(
-    async (otp: string) => {
-      if (!email) {
-        alert("Invalid data");
-        return;
-      }
-      await authValidateOtp(email, otp)
-        .then(() => {
-          push(dashBoardRoute.href);
-        })
-        .catch(() => {
-          alert("Erro no OTP");
-        });
-    },
-    [email]
-  );
+  const validateOtp = async (email: string, otp: string) => {
+    if (!email) {
+      alert("Invalid data");
+      return;
+    }
+    await authValidateOtp(email, otp)
+      .then(() => {
+        push(dashBoardRoute.href);
+        alert("Login efetuado com sucesso")
+      })
+      .catch(() => {
+        alert("Erro no OTP");
+      });
+  };
 
   const otpStep = email;
   return (

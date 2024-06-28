@@ -15,7 +15,7 @@ import { z } from "zod";
 
 interface OtpFormProps {
   email: string;
-  validateOtp: (otp: string) => Promise<any>;
+  validateOtp: (email: string, otp: string) => Promise<any>;
 }
 
 const validateOtpForm = z.object({
@@ -34,7 +34,7 @@ export function OtpForm({ validateOtp, email }: OtpFormProps) {
       return;
     }
     setLoading(true);
-    validateOtp(otp).finally(() => {
+    validateOtp(email, otp).finally(() => {
       setLoading(false);
     });
   }

@@ -102,6 +102,7 @@ export default function ProductsPage() {
         {fetchingPlans && "loader..."}
         {plans.map((plan) => (
           <PlanCard
+            key={`plan_id_${plan._id}`}
             currentPlan={currentPlan}
             handleCheckoutPlan={handleCheckoutPlan}
             loading={loading}

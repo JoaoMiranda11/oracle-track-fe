@@ -16,27 +16,43 @@ import OracleTrackAuthenticatedApi from "@/services/instances/oracle-track.api.a
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
+interface MessageForm {
+  message: string;
+  file: any;
+  title: string;
+}
+
 export default function SendPage() {
-  const { handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<MessageForm>();
   const fileRef = useRef<File>();
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: MessageForm) => {
     const file = fileRef.current;
-    if (!file) return;
+    if (!file) {
+      alert("Arquivo não encontrado!");
+      return;
+    }
+
+    console.log(data)
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("title", data.title);
+    formData.append("message", data.message);
 
-    OracleTrackAuthenticatedApi.post("sms/upload", formData, {
-      headers: { "Content-Type": "application/octet-stream" },
-    })
-      .then(() => {
-        alert("Success");
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Error");
+    try {
+      await OracleTrackAuthenticatedApi.post("sms/upload", formData, {
+        headers: { "Content-Type": "application/octet-stream" },
       });
+      alert("Success");
+    } catch (err) {
+      console.error(err);
+      alert("Error");
+    }
   };
 
   return (
@@ -54,27 +70,34 @@ export default function SendPage() {
               <div className="grid gap-3">
                 <Label htmlFor="name">Title</Label>
                 <Input
-                  id="name"
+                  id="title"
                   type="text"
                   className="w-full"
-                  defaultValue="Gamer Gear Pro Controller"
+                  {...register("title", { required: true })}
                 />
+                {errors.title && <span>Title is required</span>}
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="description">Text</Label>
                 <Textarea
-                  id="description"
+                  id="message"
                   maxLength={160}
-                  defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl nec ultricies ultricies, nunc nisl ultricies nunc, nec ultricies nunc nisl nec nunc."
-                  className="min-h-32"
+                  className="min-h-20 max-h-40"
+                  {...register("message", { required: true })}
+                />
+                {errors.message && <span>Text is required</span>}
+              </div>
+              <div className="grid gap-3">
+                <Label htmlFor="csv">CSV File</Label>
+                <Input
+                  id="csv"
+                  type="file"
+                  onChange={(ev) => {
+                    fileRef.current = ev.target?.files?.[0];
+                  }}
                 />
               </div>
-              <CSVUpload
-                setFile={(file) => {
-                  fileRef.current = file;
-                }}
-              />
-              <Button>Enviar</Button>
+              <Button type="submit">Enviar</Button>
             </div>
           </CardContent>
         </Card>

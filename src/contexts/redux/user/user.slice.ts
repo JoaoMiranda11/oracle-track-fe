@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { z } from "zod";
 
 export type UserPlanStatus = UserPlan & {
-  lastFetch: Date | null;
+  lastFetch: string | null;
 };
 export interface UserState {
   isAuthenticated: boolean;
@@ -48,13 +48,14 @@ export const getUserPlanInfo = createAsyncThunk(
       const response = await getUserPlan();
       const data = userPlanSchema.parse(response.data);
       const dueDate = new Date(data.dueDate);
+      const now = new Date(Date.now());
       const res: UserPlanStatus = {
-        startDate: new Date(data.startDate),
-        dueDate,
+        startDate: new Date(data.startDate).toString(),
+        dueDate: dueDate.toString(),
         name: data.name,
-        active: dueDate > new Date(Date.now()),
+        active: dueDate > now,
         tier: data.tier,
-        lastFetch: new Date(Date.now()),
+        lastFetch: now.toString(),
       };
       return res;
     } catch (error) {

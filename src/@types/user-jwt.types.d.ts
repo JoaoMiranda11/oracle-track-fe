@@ -10,7 +10,7 @@ interface UserJWT {
 interface UserPlan {
   name: string;
   active: boolean;
-  dueDate: Date | null;
-  startDate: Date | null;
+  dueDate: string | null;
+  startDate: string | null;
   tier: number;
 }

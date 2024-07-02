@@ -7,7 +7,7 @@ import { useAuth } from "./auth.hook";
 export function usePlan() {
   const dispatch: AppDispatch = useDispatch();
   const { isAuthenticated } = useAuth();
-  const plan = useSelector((state: RootState) => state.user.plan);
+  const plan = useSelector((state: RootState) => state.user?.plan);
   const [loading, setLoading] = useState<boolean>(true);
 
   async function getPlan() {

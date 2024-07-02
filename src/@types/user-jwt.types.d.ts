@@ -13,4 +13,10 @@ interface UserPlan {
   dueDate: string | null;
   startDate: string | null;
   tier: number;
+  lastFetch: string | null;
+}
+
+interface UserCredits {
+  value: number;
+  lastFetch: string | null;
 }

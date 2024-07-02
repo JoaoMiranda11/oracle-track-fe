@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ReactNode } from "react";
-import { PanelLeft, Search } from "lucide-react";
+import { ReactNode, useEffect } from "react";
+import { CircleDollarSign, PanelLeft, Search } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,17 +12,19 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { dashBoardRoute, dashboardRoutes } from "@/app.routes";
 
 import { capitalizeFirstLetter } from "@/utils/text.utils";
-import { cn } from "@/lib/utils";
 import { removePath } from "@/utils/path.utils";
 import { NavigateIcon } from "./_components/navigateIcon.component";
 import { AsideOption } from "./_components/asideOption.component";
 import { UserDropDown } from "./_components/userDropdown.component";
+import { useCredits } from "@/hooks/credits.hook";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { SpinLoader } from "@/components/feedbacks/loader";
 
 const navigateItens = [
   {
@@ -32,21 +34,27 @@ const navigateItens = [
   ...dashboardRoutes,
 ];
 
-function Page({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
+function UserArea() {
+  const { credits, lastUpdate, loading, getCredits } = useCredits();
+
+  useEffect(() => {
+    if (lastUpdate === null && !loading) {
+      getCredits();
+    }
+  }, [lastUpdate, loading]);
+
   return (
-    <main
-      className={cn(
-        "flex w-full flex-col bg-background max-w-[1280px]",
-        className
-      )}>
-      {children}
-    </main>
+    <div className="flex justify-center items-center cursor-pointer gap-2">
+      <div className="flex justify-center items-center gap-2">
+        <Badge
+          className="h-10 min-w-32 text-muted-foreground flex justify-between gap-4"
+          variant="outline">
+          <CircleDollarSign />
+          {credits === null ? <SpinLoader /> : credits}
+        </Badge>
+      </div>
+      <UserDropDown />
+    </div>
   );
 }
 
@@ -174,7 +182,7 @@ export default function LayoutAuthenticated({
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
             />
           </div>
-          <UserDropDown />
+          <UserArea />
         </header>
         <main className="max-w-[1280px] flex-1 flex items-start gap-4">
           {children}

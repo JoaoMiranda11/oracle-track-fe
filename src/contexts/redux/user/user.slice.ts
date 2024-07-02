@@ -1,17 +1,16 @@
 import { getUserPlan } from "@/services/user-plan";
+import * as CreditsService from "@/services/credits";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { z } from "zod";
 
-export type UserPlanStatus = UserPlan & {
-  lastFetch: string | null;
-};
 export interface UserState {
   isAuthenticated: boolean;
   user: UserJWT | null;
-  plan: UserPlanStatus;
+  plan: UserPlan;
+  credits: UserCredits;
 }
 
-const defaultPlan: UserPlanStatus = {
+const defaultPlan: UserPlan = {
   active: true,
   dueDate: null,
   startDate: null,
@@ -20,10 +19,16 @@ const defaultPlan: UserPlanStatus = {
   lastFetch: null,
 };
 
+const defaultCredits: UserCredits = {
+  lastFetch: null,
+  value: 0,
+};
+
 const initialState: UserState = {
   isAuthenticated: false,
   user: null,
   plan: defaultPlan,
+  credits: defaultCredits,
 };
 
 export const userPlanSchema = z.object({
@@ -35,6 +40,10 @@ export const userPlanSchema = z.object({
     message: "Invalid date format",
   }),
   tier: z.number(),
+});
+
+export const creditsSchema = z.object({
+  credits: z.number(),
 });
 
 export const getUserPlanInfo = createAsyncThunk(
@@ -49,7 +58,7 @@ export const getUserPlanInfo = createAsyncThunk(
       const data = userPlanSchema.parse(response.data);
       const dueDate = new Date(data.dueDate);
       const now = new Date(Date.now());
-      const res: UserPlanStatus = {
+      const res: UserPlan = {
         startDate: new Date(data.startDate).toString(),
         dueDate: dueDate.toString(),
         name: data.name,
@@ -61,6 +70,29 @@ export const getUserPlanInfo = createAsyncThunk(
     } catch (error) {
       console.error(error);
       return rejectWithValue("Failed to fetch user plan");
+    }
+  }
+);
+
+export const getUserCredits = createAsyncThunk(
+  "user/getCredits",
+  async (_, { getState, rejectWithValue }) => {
+    const state = getState() as { user: UserState };
+    if (!state.user.isAuthenticated) {
+      return rejectWithValue("User is not authenticated");
+    }
+    try {
+      const response = await CreditsService.getCredits();
+      const data = creditsSchema.parse({ number: response.data });
+      const now = new Date(Date.now());
+      const result: UserCredits = {
+        value: data.credits,
+        lastFetch: now.toString(),
+      };
+      return result;
+    } catch (error) {
+      console.error(error);
+      return rejectWithValue("Failed to fetch user credits");
     }
   }
 );
@@ -81,11 +113,20 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(
       getUserPlanInfo.fulfilled,
-      (state, action: PayloadAction<UserPlanStatus>) => {
+      (state, action: PayloadAction<UserPlan>) => {
         state.plan = action.payload;
       }
     );
     builder.addCase(getUserPlanInfo.rejected, (state, action) => {
+      console.error(action.payload);
+    });
+    builder.addCase(
+      getUserCredits.fulfilled,
+      (state, action: PayloadAction<UserCredits>) => {
+        state.credits = action.payload;
+      }
+    );
+    builder.addCase(getUserCredits.rejected, (state, action) => {
       console.error(action.payload);
     });
   },

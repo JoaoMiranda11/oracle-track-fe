@@ -243,10 +243,10 @@ export default function HomePage() {
                 </Avatar>
                 <div className="grid gap-1">
                   <p className="text-sm font-medium leading-none">
-                    Isabella Nguyen
+                    Pessoa X
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    isabella.nguyen@email.com
+                    persona.x@email.com
                   </p>
                 </div>
                 <div className="ml-auto font-medium">+$299.00</div>

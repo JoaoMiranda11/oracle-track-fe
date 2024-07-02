@@ -8,6 +8,7 @@ import { Label } from "@radix-ui/react-label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const validateSigninForm = z.object({
@@ -30,7 +31,7 @@ export default function SigninUp() {
       push("/auth/login");
       return
     }
-    alert("Err")
+    toast.error("Erro ao realizar cadastro")
   }
 
   return (
@@ -61,7 +62,7 @@ export default function SigninUp() {
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="email@mail.com"
                 required
                 {...register("email")}
               />

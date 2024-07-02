@@ -49,7 +49,7 @@ export function LoginForm({ signin }: LoginFormProps) {
           <Input
             id="email"
             type="email"
-            placeholder="m@example.com"
+            placeholder="email@mail.com"
             required
             {...register("email")}
           />

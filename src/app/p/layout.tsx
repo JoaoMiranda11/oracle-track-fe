@@ -42,7 +42,7 @@ function Page({
   return (
     <main
       className={cn(
-        "flex min-h-screen w-full flex-col bg-background",
+        "flex w-full flex-col bg-background max-w-[1280px]",
         className
       )}>
       {children}
@@ -70,7 +70,7 @@ export default function LayoutAuthenticated({
     });
 
   return (
-    <Page>
+    <>
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col bg-primary-theme sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
           <Link
@@ -104,8 +104,8 @@ export default function LayoutAuthenticated({
           </AsideOption>
         </nav>
       </aside>
-      <div className="flex flex-1 flex-col sm:gap-4 sm:py-4 sm:pl-14">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+      <div className="flex flex-1 flex-col items-center justify-center sm:gap-4 sm:py-4 sm:pl-14">
+        <header className="max-w-[1280px] w-full sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-8 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
           <Sheet>
             <SheetTrigger asChild>
               <Button size="icon" variant="outline" className="sm:hidden">
@@ -176,10 +176,10 @@ export default function LayoutAuthenticated({
           </div>
           <UserDropDown />
         </header>
-        <main className="flex-1 flex items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+        <main className="max-w-[1280px] flex-1 flex items-start gap-4">
           {children}
         </main>
       </div>
-    </Page>
+    </>
   );
 }

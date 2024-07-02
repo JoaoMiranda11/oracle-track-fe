@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import OracleTrackAuthenticatedApi from "@/services/instances/oracle-track.api.authenticated";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface MessageForm {
   message: string;
@@ -33,7 +34,7 @@ export default function SendPage() {
   const onSubmit = async (data: MessageForm) => {
     const file = fileRef.current;
     if (!file) {
-      alert("Arquivo não encontrado!");
+      toast.error("Arquivo não encontrado!");
       return;
     }
 
@@ -48,10 +49,10 @@ export default function SendPage() {
       await OracleTrackAuthenticatedApi.post("sms/upload", formData, {
         headers: { "Content-Type": "application/octet-stream" },
       });
-      alert("Success");
+      toast.success("Success");
     } catch (err) {
       console.error(err);
-      alert("Error");
+      toast.error("Error");
     }
   };
 

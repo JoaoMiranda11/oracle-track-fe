@@ -13,6 +13,7 @@ import { usePlan } from "@/hooks/plan.hook";
 import { Plan, getAllPlans, purchasePlan } from "@/services/user-plan";
 import { DollarSign } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 function PlanCard(props: {
   plan: Plan;
@@ -76,7 +77,7 @@ export default function ProductsPage() {
         setPlans(data);
       })
       .catch(() => {
-        alert("Couldn't get plans");
+        toast.error("Couldn't get plans");
       })
       .finally(() => {
         setFetchingPlans(false);

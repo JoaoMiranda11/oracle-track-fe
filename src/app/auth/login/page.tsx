@@ -1,17 +1,43 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { LoginForm } from "./_components/login";
 import { OtpForm } from "./_components/otp";
-import { CountDown } from "@/components/feedbacks/countdown";
 import { useAuth } from "@/hooks/auth.hook";
-import { useRouter } from "next/navigation";
-import { dashBoardRoute } from "@/app.routes";
+import { toast } from "sonner";
+import { LoginLoadingStep } from "./_components/loading";
+
+type Steps = "login" | "otp" | "loading";
+
+function FormSteps({
+  step,
+  dueDate,
+  signin,
+  validateOtp,
+  email,
+}: {
+  step: Steps;
+  dueDate: Date;
+  email: string;
+  signin: (email: string, password: string) => Promise<void>;
+  validateOtp: (email: string, otp: string) => Promise<void>;
+}) {
+  switch (step) {
+    case "loading":
+      return <LoginLoadingStep />;
+    case "otp":
+      return (
+        <OtpForm validateOtp={validateOtp} email={email} dueDate={dueDate} />
+      );
+    case "login":
+      return <LoginForm signin={signin} />;
+  }
+}
 
 export default function Login() {
-  const [dueDate, setDueDate] = useState<Date>();
-  const [email, setEmail] = useState<string>();
-  const { push } = useRouter();
+  const [dueDate, setDueDate] = useState<Date>(new Date());
+  const [email, setEmail] = useState<string>("");
+  const [step, setStep] = useState<Steps>("login");
   const { signin: authSignin, validateOtp: authValidateOtp } = useAuth();
 
   const signin = async (email: string, password: string) => {
@@ -19,37 +45,38 @@ export default function Login() {
       .then((data) => {
         setEmail(email);
         setDueDate(new Date(data));
+        setStep('otp')
       })
       .catch(() => {
-        alert("Erro ao efetuar login!");
+        toast.error("Erro ao efetuar login!");
       });
   };
 
   const validateOtp = async (email: string, otp: string) => {
     if (!email) {
-      alert("Invalid data");
+      toast.error("Invalid data");
       return;
     }
     await authValidateOtp(email, otp)
       .then(() => {
-        push(dashBoardRoute.href);
-        alert("Login efetuado com sucesso")
+        setStep('loading')
+        toast.error("Login efetuado com sucesso");
       })
       .catch(() => {
-        alert("Erro no OTP");
+        toast.error("Erro no OTP");
       });
   };
 
-  const otpStep = email;
   return (
     <main className="w-full h-full min-h-dvh flex justify-center items-center">
       <div className="flex flex-col items-center justify-center py-12">
-        {otpStep ? (
-          <OtpForm validateOtp={validateOtp} email={email} />
-        ) : (
-          <LoginForm signin={signin} />
-        )}
-        {dueDate && <CountDown dueDate={dueDate} />}
+        <FormSteps
+          dueDate={dueDate}
+          email={email}
+          signin={signin}
+          step={step}
+          validateOtp={validateOtp}
+        />
       </div>
     </main>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { CountDown } from "@/components/feedbacks/countdown";
 import { SpinLoader } from "@/components/feedbacks/loader";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,13 +9,13 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 import { z } from "zod";
 
 interface OtpFormProps {
   email: string;
+  dueDate: Date;
   validateOtp: (email: string, otp: string) => Promise<any>;
 }
 
@@ -23,14 +24,14 @@ const validateOtpForm = z.object({
 });
 type OtpIputs = z.infer<typeof validateOtpForm>;
 
-export function OtpForm({ validateOtp, email }: OtpFormProps) {
+export function OtpForm({ validateOtp, email, dueDate }: OtpFormProps) {
   const [value, setValue] = useState("");
   const [loading, setLoading] = useState(false);
 
   function handleSubmit(otp: string) {
     const validatorOtp = validateOtpForm.safeParse({ otp });
     if (validatorOtp.error) {
-      alert("Invalid OTP");
+      toast.error("Invalid OTP");
       return;
     }
     setLoading(true);
@@ -70,6 +71,9 @@ export function OtpForm({ validateOtp, email }: OtpFormProps) {
               <InputOTPSlot index={5} />
             </InputOTPGroup>
           </InputOTP>
+        </div>
+        <div className="flex justify-center w-full">
+          {dueDate && <CountDown dueDate={dueDate} />}
         </div>
         <Button disabled={loading} type="submit" className="w-full">
           {loading ? <SpinLoader /> : "Acessar"}

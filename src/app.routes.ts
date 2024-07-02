@@ -32,7 +32,7 @@ export const dashboardRoutes: Route[] = [
 
 export const routes: Route[] = [
   {
-    title: "dashboard",
+    title: "Dashboard",
     href: "/p",
     routes: dashboardRoutes,
   },

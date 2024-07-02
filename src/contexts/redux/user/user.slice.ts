@@ -76,14 +76,10 @@ export const getUserPlanInfo = createAsyncThunk(
 
 export const getUserCredits = createAsyncThunk(
   "user/getCredits",
-  async (_, { getState, rejectWithValue }) => {
-    const state = getState() as { user: UserState };
-    if (!state.user.isAuthenticated) {
-      return rejectWithValue("User is not authenticated");
-    }
+  async (_, { rejectWithValue }) => {
     try {
       const response = await CreditsService.getCredits();
-      const data = creditsSchema.parse({ number: response.data });
+      const data = creditsSchema.parse({ credits: response.data });
       const now = new Date(Date.now());
       const result: UserCredits = {
         value: data.credits,
@@ -127,6 +123,7 @@ const userSlice = createSlice({
       }
     );
     builder.addCase(getUserCredits.rejected, (state, action) => {
+      state.credits.lastFetch = new Date(Date.now()).toString()
       console.error(action.payload);
     });
   },

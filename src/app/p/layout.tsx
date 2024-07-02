@@ -35,13 +35,7 @@ const navigateItens = [
 ];
 
 function UserArea() {
-  const { credits, lastUpdate, loading, getCredits } = useCredits();
-
-  useEffect(() => {
-    if (lastUpdate === null && !loading) {
-      getCredits();
-    }
-  }, [lastUpdate, loading]);
+  const { credits, loading } = useCredits();
 
   return (
     <div className="flex justify-center items-center cursor-pointer gap-2">
@@ -50,7 +44,7 @@ function UserArea() {
           className="h-10 min-w-32 text-muted-foreground flex justify-between gap-4"
           variant="outline">
           <CircleDollarSign />
-          {credits === null ? <SpinLoader /> : credits}
+          {loading ? <SpinLoader /> : credits.toLocaleString("pt-br")}
         </Badge>
       </div>
       <UserDropDown />

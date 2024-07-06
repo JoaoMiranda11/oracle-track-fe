@@ -99,6 +99,7 @@ export default function SendPage() {
               <div className="grid gap-3">
                 <Label htmlFor="name">Title</Label>
                 <Input
+                  disabled={loading}
                   id="title"
                   type="text"
                   className="w-full"
@@ -111,6 +112,7 @@ export default function SendPage() {
                 <Textarea
                   id="message"
                   maxLength={160}
+                  disabled={loading}
                   className="min-h-20 max-h-40"
                   {...register("message", { required: true })}
                 />
@@ -121,6 +123,7 @@ export default function SendPage() {
                 <Input
                   id="csv"
                   type="file"
+                  disabled={loading}
                   onChange={(ev) => {
                     fileRef.current = ev.target?.files?.[0];
                   }}

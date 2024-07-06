@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { UserPlanStatus } from "@/contexts/redux/user/user.slice";
 import { usePlan } from "@/hooks/plan.hook";
 import { Plan, getAllPlans, purchasePlan } from "@/services/user-plan";
 import { DollarSign } from "lucide-react";
@@ -17,7 +16,7 @@ import { toast } from "sonner";
 
 function PlanCard(props: {
   plan: Plan;
-  currentPlan: UserPlanStatus;
+  currentPlan: UserPlan;
   handleCheckoutPlan: (planName: string) => void;
   loading: boolean;
 }) {

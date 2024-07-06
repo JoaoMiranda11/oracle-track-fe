@@ -10,11 +10,16 @@ import {
   useState,
 } from "react";
 import io, { Socket } from "socket.io-client";
-import { WsEventsServer } from "./ws.enum";
+import { WsEventsClient, WsEventsServer } from "./ws.enum";
+
+export interface WsMessage<T> {
+  msg?: string;
+  metadata?: T;
+}
 
 interface NotificationContextValues {
-  emit: (ev: string, message: any) => void;
-  on: (ev: string, cb: <T>(data: T) => void) => void;
+  emit: (ev: WsEventsClient, message: any) => void;
+  on: <T>(ev: WsEventsServer, cb: (data: WsMessage<T>) => void) => void;
   connected: boolean;
 }
 
@@ -63,11 +68,11 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     [user?._id]
   );
 
-  const emit = (ev: string, message: string) => {
+  const emit = (ev: WsEventsClient, message: string) => {
     socketRef?.current?.emit(ev, message);
   };
 
-  function on<T>(ev: string, cb: (data: T) => void) {
+  function on<T>(ev: WsEventsServer, cb: (data: T) => void) {
     socketRef?.current?.on(ev, cb);
   }
 

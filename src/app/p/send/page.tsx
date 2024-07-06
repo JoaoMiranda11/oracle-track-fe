@@ -1,6 +1,5 @@
 "use client";
 
-import CSVUpload from "@/components/inputs/csvInput";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,9 +10,15 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
+import { useNotification } from "@/contexts/client/notification/notification.context";
+import {
+  WsEventsClient,
+  WsEventsServer,
+} from "@/contexts/client/notification/ws.enum";
 import OracleTrackAuthenticatedApi from "@/services/instances/oracle-track.api.authenticated";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -23,6 +28,7 @@ interface MessageForm {
   title: string;
 }
 
+const defaultProgress = { value: 0, message: "" };
 export default function SendPage() {
   const {
     register,
@@ -30,36 +36,58 @@ export default function SendPage() {
     formState: { errors },
   } = useForm<MessageForm>();
   const fileRef = useRef<File>();
+  const { connected, on } = useNotification();
+  const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState(defaultProgress);
 
-  const onSubmit = async (data: MessageForm) => {
+  const onSubmit = (data: MessageForm) => {
     const file = fileRef.current;
     if (!file) {
       toast.error("Arquivo não encontrado!");
       return;
     }
 
-    console.log(data)
-
     const formData = new FormData();
     formData.append("file", file);
     formData.append("title", data.title);
     formData.append("message", data.message);
 
-    try {
-      await OracleTrackAuthenticatedApi.post("sms/upload", formData, {
-        headers: { "Content-Type": "application/octet-stream" },
+    setLoading(true);
+    OracleTrackAuthenticatedApi.post("sms/upload", formData, {
+      headers: { "Content-Type": "application/octet-stream" },
+    })
+      .then((res) => {
+        toast.success("Success");
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Error");
+      })
+      .finally(() => {
+        setLoading(false);
+        setStep(defaultProgress);
       });
-      toast.success("Success");
-    } catch (err) {
-      console.error(err);
-      toast.error("Error");
-    }
   };
+
+  useEffect(() => {
+    if (connected) {
+      on<{ step: number }>(WsEventsServer.FEEDBACK_SEND_SMS, (res) => {
+        setStep({ value: res.metadata?.step ?? 0, message: res.msg ?? "" });
+      });
+    }
+  }, [connected]);
 
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Card x-chunk="dashboard-07-chunk-0">
+        <Card x-chunk="dashboard-07-chunk-0" className="relative">
+          {loading && (
+            <div className="absolute flex justify-center items-center flex-col gap-2 rounded-lg z-30 w-full h-full bg-primary-theme">
+              <Progress value={step.value} className="w-[60%]" />
+              <span>{step.message}</span>
+            </div>
+          )}
+
           <CardHeader>
             <CardTitle>Enviar SMS</CardTitle>
             <CardDescription>
@@ -98,7 +126,9 @@ export default function SendPage() {
                   }}
                 />
               </div>
-              <Button type="submit">Enviar</Button>
+              <Button disabled={loading} type="submit">
+                Enviar
+              </Button>
             </div>
           </CardContent>
         </Card>

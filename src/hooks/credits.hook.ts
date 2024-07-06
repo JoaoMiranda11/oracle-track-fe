@@ -1,7 +1,7 @@
 import { AppDispatch, RootState } from "@/contexts/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
-import { getUserCredits } from "@/contexts/redux/user/user.slice";
+import { getUserCredits, setCredits } from "@/contexts/redux/user/user.slice";
 
 export function useCredits() {
   const dispatch: AppDispatch = useDispatch();
@@ -19,6 +19,10 @@ export function useCredits() {
     setLoading(false);
   }
 
+  function updateCredits(credits: number) {
+    dispatch(setCredits(credits))
+  }
+
   useEffect(() => {
     if (credits.lastFetch === null && !fetchingRef.current && isAuthenticated) {
       getCredits();
@@ -29,6 +33,7 @@ export function useCredits() {
     credits: credits.value ?? 0,
     lastUpdate: credits.lastFetch,
     getCredits,
+    updateCredits,
     loading,
   };
 }

@@ -105,6 +105,15 @@ const userSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
     },
+    setCredits: (state, action: PayloadAction<number>) => {
+      state.credits = {
+        lastFetch: new Date(Date.now()).toLocaleString("pt-br"),
+        value: action.payload,
+      };
+    },
+    setPlan: (state, action: PayloadAction<UserPlan>) => {
+      state.plan = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -123,12 +132,12 @@ const userSlice = createSlice({
       }
     );
     builder.addCase(getUserCredits.rejected, (state, action) => {
-      state.credits.lastFetch = new Date(Date.now()).toString()
+      state.credits.lastFetch = new Date(Date.now()).toString();
       console.error(action.payload);
     });
   },
 });
 
-export const { login, logout } = userSlice.actions;
+export const { login, logout, setCredits, setPlan } = userSlice.actions;
 
 export default userSlice.reducer;

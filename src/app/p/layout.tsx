@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { CircleDollarSign, PanelLeft, Search } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ import { useCredits } from "@/hooks/credits.hook";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { SpinLoader } from "@/components/feedbacks/loader";
+import NumberTicker from "@/components/magicui/number-ticker";
 
 const navigateItens = [
   {
@@ -37,6 +38,7 @@ const navigateItens = [
 function UserArea() {
   const { credits, loading } = useCredits();
 
+  // const x = credits.toLocaleString("pt-br")
   return (
     <div className="flex justify-center items-center cursor-pointer gap-2">
       <div className="flex justify-center items-center gap-2">
@@ -44,7 +46,11 @@ function UserArea() {
           className="h-10 min-w-32 text-muted-foreground flex justify-between gap-4"
           variant="outline">
           <CircleDollarSign />
-          {loading ? <SpinLoader /> : credits.toLocaleString("pt-br")}
+          {loading ? (
+            <SpinLoader />
+          ) : (
+            <NumberTicker value={credits} delay={3} />
+          )}
         </Badge>
       </div>
       <UserDropDown />

@@ -5,7 +5,6 @@ export enum WsEventsServer {
   UPDATE_CREDITS = 'update_credits',
 }
 
-
 export enum WsEventsClient {
   PAYMENT_PLAN = "payment_plan",
 }

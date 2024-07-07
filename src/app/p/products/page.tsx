@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { usePlan } from "@/hooks/plan.hook";
 import { Plan, getAllPlans, purchasePlan } from "@/services/user-plan";
 import { DollarSign } from "lucide-react";
@@ -89,13 +90,14 @@ export default function ProductsPage() {
 
   return (
     <div>
-      <div>
-        <div>
-          Plano atual: {loading ? "skeletonLoading..." : currentPlan?.name}
-        </div>
-        <div>
-          Ativo:{" "}
-          {loading ? "skeletonLoading..." : currentPlan?.active?.toString()}
+      <div className="my-2">
+        <div className="flex items-center gap-2">
+          Plano atual:
+          {loading ? (
+            <Skeleton className="w-[100px] h-4 rounded-full" />
+          ) : (
+            <p>{currentPlan?.name}</p>
+          )}
         </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
